@@ -5,44 +5,56 @@ const Lista = () => {
     const [valorInput, setValorInput] = useState("");
 
     return (
-        <>
-            <div className="d-flex flex-column align-items-center">
-                <h1>Lista de tareas</h1>
-                <ul className="inline">
-                    <li>
-                        <input
-                            type="text"
-                            placeholder="añade tarea"
-                            onKeyUp={(e) => {
-                                if (e.key === "Enter") {
-                                    setTareas(tareas.concat(valorInput));
-                                    setValorInput("");
-                                }
-                            }}
-                            value={valorInput}
-                            onChange={(e) => setValorInput(e.target.value)}
-                        />
-                    </li>
-                    {tareas.length === 0 ? (
-                        <li>No hay tareas</li>
+            <div className="container d-flex flex-column align-items-center">
+                <h1 className="mt-5">Lista de tareas</h1>
+                    <ul className="list-group">
+                        <li class="list-group-item hoja ">
+                            <input
+                                    type="text"
+                                    placeholder="añade tarea"
+                                    onKeyUp={(e) => {
+                                        if (e.key === "Enter") {
+                                            setTareas(tareas.concat(valorInput));
+                                            setValorInput("");
+                                        }
+                                    }}
+                                    value={valorInput}
+                                    onChange={(e) => setValorInput(e.target.value)}
+                                />
+                                 {tareas.length === 0 ? (
+                        <p className="text-center">
+                            No hay tareas
+                        </p>
                     ) : (
-                        tareas.map((item, index) => (
-                            <li key={index} className="nuevatarea">
-                                {item}
-                                <button
-                                    className="btn btn-danger eliminar-btn"
-                                    onClick={() => setTareas(tareas.filter((t, currentIndex) => index !== currentIndex))}
-                                >
-                                    Eliminar
-                                </button>
-                            </li>
-                        ))
-                    )}
-                </ul>
-            </div>
-        </>
+                            <>
+                                {tareas.map((item, index) => (
+                                    <ul key={index} className="nuevatarea">
+                                        {item}
+                                        <button
+                                            className="btn btn-danger eliminar-btn"
+                                            onClick={() => setTareas(tareas.filter((t, currentIndex) => index !== currentIndex))}
+                                        >
+                                            Eliminar
+                                        </button>
+                                    </ul>
+                                ))}
+                                {/* Mostrar el número total de tareas */}
+                                <ul className="text-center">
+                                    
+                                    {tareas.length === 1  ? 
+                                        (<p> 1 Tarea </p>) 
+                                        : (<p>{tareas.length} Tareas</p>)
+                                    }
+                                    
+                                </ul> 
+                            </>
+                        )}
+                        </li>
+                    </ul>
+        </div>
     );
 };
 
 export default Lista;
+
 
