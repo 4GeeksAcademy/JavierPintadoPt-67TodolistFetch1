@@ -1,14 +1,92 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Lista = () => {
     const [tareas, setTareas] = useState([]);
     const [valorInput, setValorInput] = useState("");
 
+    const host="https://playground.4geeks.com/todo";
+    const user="pepito12";
+
+    // Función para crear usuario
+    async function crearUsuario() {
+        const uri = `${host}/users/${user}`;
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({})
+        };
+        const response = await fetch(uri, options);
+
+        // Manejo de errores
+        if (!response.ok) {
+            console.log("Error", response.status, response.statusText);
+            return;
+        }
+
+        const data = await response.json();
+        console.log("Usuario creado:", data);
+    }
+
+    // Función para crear tareas (método POST)
+    async function crearTareas(tarea) {
+        const uri = `${host}/todos/${user}`;
+        const todo = { label: tarea, is_done: false };
+        const options = {
+            method: "POST",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify(todo)
+        };
+
+        const response = await fetch(uri, options);
+
+        // Manejo de errores
+        if (!response.ok) {
+            console.log("Error", response.status, response.statusText);
+            return;
+        }
+
+        // Limpiar el input y traer las tareas nuevamente
+        setValorInput("");
+        traerTareas();
+    }
+
+    // Función para traer las tareas (método GET)
+    async function traerTareas() {
+        const uri = `${host}/users/${user}`;
+        const options = { method: "GET" };
+        const response = await fetch(uri, options);
+
+        // Manejo de errores
+        if (!response.ok) {
+            console.log("Error", response.status, response.statusText);
+            return;
+        }
+
+        const data = await response.json();
+        setTareas(data.todos);
+    }
+
+    // Función para borrar tareas (método DELETE)
+    async function borrarTarea(id) {
+        const uri = `${host}/todos/${id}`;
+        const options = { method: "DELETE", headers: { "accept": "application/json" } };
+        const response = await fetch(uri, options);
+
+        // Traer las tareas nuevamente después de borrar
+        traerTareas();
+    }
+
+    useEffect(() => {
+        crearUsuario();
+        traerTareas();
+    }, []);
+        
+        // html
     return (
             <div className="container d-flex flex-column align-items-center">
                 <h1 className="mt-5">Lista de tareas</h1>
                     <ul className="list-group">
-                        <li class="list-group-item hoja ">
+                        <li className="list-group-item hoja ">
                             <input
                                     type="text"
                                     placeholder="añade tarea"
