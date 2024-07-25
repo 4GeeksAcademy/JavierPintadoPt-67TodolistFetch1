@@ -7,6 +7,7 @@ const Lista = () => {
     const host="https://playground.4geeks.com/todo";
     const user="pepito12";
 
+    
     // Función para crear usuario
     async function crearUsuario() {
         const uri = `${host}/users/${user}`;
@@ -33,7 +34,7 @@ const Lista = () => {
         const todo = { label: tarea, is_done: false };
         const options = {
             method: "POST",
-            headers: { "Content-type": "application/json" },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(todo)
         };
 
@@ -69,8 +70,14 @@ const Lista = () => {
     // Función para borrar tareas (método DELETE)
     async function borrarTarea(id) {
         const uri = `${host}/todos/${id}`;
-        const options = { method: "DELETE", headers: { "accept": "application/json" } };
+        const options = { method: "DELETE", headers: { "Content-Type": "application/json"} };
         const response = await fetch(uri, options);
+
+        // Manejo de errores
+        if (!response.ok) {
+            console.log("Error", response.status, response.statusText);
+            return;
+        }
 
         // Traer las tareas nuevamente después de borrar
         traerTareas();
@@ -92,7 +99,7 @@ const Lista = () => {
                                     placeholder="añade tarea"
                                     onKeyUp={(e) => {
                                         if (e.key === "Enter") {
-                                            setTareas(tareas.concat(valorInput));
+                                            crearTareas(valorInput);
                                             setValorInput("");
                                         }
                                     }}
@@ -107,10 +114,10 @@ const Lista = () => {
                             <>
                                 {tareas.map((item, index) => (
                                     <ul key={index} className="nuevatarea">
-                                        {item}
+                                        {item.label}
                                         <button
                                             className="btn btn-danger eliminar-btn"
-                                            onClick={() => setTareas(tareas.filter((t, currentIndex) => index !== currentIndex))}
+                                            onClick={() => borrarTarea(item.id)}
                                         >
                                             Eliminar
                                         </button>
@@ -134,5 +141,10 @@ const Lista = () => {
 };
 
 export default Lista;
+
+
+
+
+
 
 
